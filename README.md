@@ -49,7 +49,7 @@ const pushyanth = {
 ## 🌐 Connect With Me
 
 <p align="center">
-  <a href="https://github.com/pushyanth">
+  <a href="https://github.com/Pushyanth02">
     <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub badge" />
   </a>
   <a href="mailto:pushyanth2008@gmail.com">
