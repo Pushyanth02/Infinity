@@ -162,9 +162,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         hue + 0.16 + 0.10 * sin(angle * 2.0 - t)
     );
 
-    col += hsv2rgb(vec3(looseHue, 0.90, 1.0))
-         * looseStrands * 0.17;
-
     float glintWave = 0.5 + 0.5 * sin(
         signedD * 92.0 - t * 4.2
         + 9.0 * sin(angle * 2.0 + t)
@@ -172,13 +169,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     float glints = pow(glintWave, 18.0) * exp(-d * 9.0);
     col += vec3(1.0) * glints * 0.16;
-
-    float nexus = exp(-dot(p, p) * 170.0);
-    col += vec3(0.24) * nexus;
-    col += vec3(1.0) * exp(-dot(p, p) * 2000.0) * 1.1;
-
-    col = min(col, vec3(1.0));
-    col = pow(max(col, 0.0), vec3(0.92));
 
     fragColor = vec4(col, 1.0);
 }
