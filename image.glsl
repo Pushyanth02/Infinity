@@ -85,7 +85,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float whiteHalo = exp(-d * 10.0);
     float whiteGlow = exp(-d * 30.0);
     float whiteLine = exp(-d * 122.0);
-    float whiteCore = exp(-d * 30.0);
+    float whiteCore = exp(-d * 300.0);
 
     col += vec3(0.05) * whiteHalo;
     col += vec3(0.15) * whiteGlow;
