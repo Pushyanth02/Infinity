@@ -87,9 +87,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float whiteLine = exp(-d * 122.0);
     float whiteCore = exp(-d * 300.0);
 
-    col += vec3(0.055) * whiteHalo;
-    col += vec3(0.16) * whiteGlow;
-    col += vec3(0.57) * whiteLine;
+    col += vec3(0.05) * whiteHalo;
+    col += vec3(0.15) * whiteGlow;
+    col += vec3(0.8) * whiteLine;
     col += vec3(1.0) * whiteCore;
 
     float warpA = 1.55 * sin(
@@ -170,7 +170,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         + 9.0 * sin(angle * 2.0 + t)
     );
 
-    float glints = pow(glintWave, 18.0) * exp(-d * 9.0);
+    float glints = pow(glintWave, 1.0) * exp(-d * 9.0);
     col += vec3(1.0) * glints * 0.16;
 
     float nexus = exp(-dot(p, p) * 170.0);
