@@ -1,0 +1,24 @@
+{
+  "ver": "0.1",
+  "info": {
+    "id": "",
+    "name": "",
+    "description": "",
+    "tags": []
+  },
+  "renderpass": [
+    {
+      "inputs": [],
+      "outputs": [
+        {
+          "id": "4dfGRr",
+          "channel": 0
+        }
+      ],
+      "code": "// Welcome! This is a Shadertoy-style shader.\n// mainImage runs once for each pixel, every frame.\n// Try changing a number, then watch the preview on the right.\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    // Pixel position, from 0 to 1 across the screen.\n    vec2 uv = fragCoord / iResolution.xy;\n\n    // A colour that shifts over time.\n    vec3 col = 2.0 + 1.0 * cos(iTime + uv.xyx + vec3(0.0, 2.0, 4.0));\n\n    // A soft circle in the middle that follows the mouse while you hold a button.\n    vec2 centre = iMouse.z > 0.0 ? iMouse.xy : 0.5 * iResolution.xy;\n    float d = length(fragCoord - centre) / iResolution.y;\n    col *= smoothstep(0.35, 0.3, d) * 0.9 + 0.5;\n\n    fragColor = vec4(col, 1.0);\n}\n",
+      "name": "Image",
+      "description": "",
+      "type": "image"
+    }
+  ]
+}
