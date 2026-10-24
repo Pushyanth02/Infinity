@@ -1,7 +1,4 @@
 
-// INFINITY COSMOS — procedural space shader
-// ShaderGator / Shadertoy-style fragment shader (GLSL ES 3.0)
-
 float hash21(vec2 p)
 {
     p = fract(p * vec2(123.34, 456.21));
@@ -127,13 +124,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     float d = abs(field) / max(length(gradient), 0.001);
 
-    // Layered glow: atmosphere, neon body, and bright filament.
     float outerGlow = exp(-d * 8.0);
     float body      = exp(-d * 42.0);
     float filament  = exp(-d * 145.0);
     float hotCore   = exp(-d * 330.0);
 
-    // Cyan-to-violet-to-pink color cycling.
     float angle = atan(p.y, p.x);
     float hue = 0.5 + 0.5 * sin(
         2.3 * p.x - 1.7 * p.y + t * 0.62 + 2.0 * angle
@@ -146,7 +141,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec3 energy = mix(cyan, violet, smoothstep(0.12, 0.72, hue));
     energy = mix(energy, pink, smoothstep(0.68, 0.98, hue));
 
-    // Animated energy traveling along the infinity line.
     float flow = 0.72 + 0.28 * sin(
         19.0 * (p.x + p.y) - t * 3.1
         + 1.4 * sin(6.0 * p.x - t)
@@ -157,7 +151,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     col += energy * filament * 1.35;
     col += vec3(0.68, 0.91, 1.0) * hotCore * 1.25;
 
-    // Four luminous particles circulating along the infinity path.
     for (int i = 0; i < 4; i++)
     {
         float phase = t * 0.82 + float(i) * 1.5707963;
@@ -178,19 +171,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         col += particleColor * particle * 2.6;
     }
 
-    // Luminous nexus at the central crossing.
     float nexus = exp(-dot(p, p) * 105.0);
 
     col += vec3(0.20, 0.35, 1.0) * nexus * 0.55;
     col += vec3(0.68, 0.22, 1.0) * nexus * 0.25
            * (0.7 + 0.3 * sin(t * 2.0));
 
-    // Cinematic vignette and gentle tonemapping.
     float vignette = 1.0 - 0.30 * smoothstep(0.30, 1.08, length(uv));
     col *= vignette;
 
-    col = col / (1.0 + col * 0.30);
-    col = pow(max(col, 0.0), vec3(0.92));
+    col = col / (1.0 + col * 0.50);
+    col = pow(max(col, 0.0), vec3(1.00));
 
     fragColor = vec4(col, 1.0);
 }
