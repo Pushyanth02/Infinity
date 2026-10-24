@@ -85,7 +85,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float whiteHalo = exp(-d * 10.0);
     float whiteGlow = exp(-d * 30.0);
     float whiteLine = exp(-d * 122.0);
-    float whiteCore = exp(-d * 300.0);
+    float whiteCore = exp(-d * 30.0);
 
     col += vec3(0.05) * whiteHalo;
     col += vec3(0.15) * whiteGlow;
@@ -175,7 +175,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     float nexus = exp(-dot(p, p) * 170.0);
     col += vec3(0.24) * nexus;
-    col += vec3(1.0) * exp(-dot(p, p) * 900.0) * 1.1;
+    col += vec3(1.0) * exp(-dot(p, p) * 2000.0) * 1.1;
 
     col = min(col, vec3(1.0));
     col = pow(max(col, 0.0), vec3(0.92));
