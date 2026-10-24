@@ -143,11 +143,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     col += vec3(0.05) * exp(-d * 10.0);
     col += vec3(0.15) * exp(-d * 30.0);
     col += vec3(0.80) * exp(-d * 122.0);
-    col += vec3(1.0) * exp(-d * 300.0);
-
-    float center = exp(-dot(p, p) * 170.0);
-    col += vec3(0.24) * center;
-    col += vec3(1.0) * exp(-dot(p, p) * 900.0) * 1.1;
+    col += vec3(1.0) * exp(-d * 3.0);
 
     col = pow(max(col, 0.0), vec3(0.92));
     fragColor = vec4(col, 1.0);
