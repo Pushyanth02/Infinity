@@ -1,8 +1,4 @@
 
-// INFINITY COSMOS — Prismatic Energy Edition
-// Black background, rainbow infinity, colorful glowing orbs,
-// flowing energy rays, and animated stars.
-
 float hash21(vec2 p)
 {
     p = fract(p * vec2(123.34, 456.21));
@@ -27,8 +23,7 @@ float noise(vec2 p)
 vec3 hsv2rgb(vec3 c)
 {
     vec3 rgb = clamp(
-        abs(mod(c.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0)
-        - 1.0,
+        abs(mod(c.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0,
         0.0, 1.0
     );
     rgb = rgb * rgb * (3.0 - 2.0 * rgb);
@@ -37,23 +32,21 @@ vec3 hsv2rgb(vec3 c)
 
 float starField(vec2 p)
 {
-    vec2 grid = p * 86.0;
+    vec2 grid = p * 84.0;
     vec2 id = floor(grid);
     vec2 f = fract(grid) - 0.5;
 
     float h = hash21(id + vec2(2.7, 8.1));
-
     vec2 offset = vec2(
         hash21(id + vec2(1.3, 4.1)),
         hash21(id + vec2(7.2, 2.6))
     ) - 0.5;
 
     vec2 q = f - offset * 0.65;
-    float radius = mix(0.018, 0.075, hash21(id + 5.2));
-
+    float radius = mix(0.018, 0.070, hash21(id + 5.2));
     float star = exp(-dot(q, q) / (radius * radius));
-    float visible = smoothstep(0.965, 0.998, h);
-    float twinkle = 0.68 + 0.32 *
+    float visible = smoothstep(0.966, 0.998, h);
+    float twinkle = 0.72 + 0.28 *
         sin(iTime * (1.6 + h * 4.0) + h * 90.0);
 
     return star * visible * twinkle;
@@ -63,109 +56,86 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     float t = iTime;
 
-    // Centered coordinates with correct screen proportions.
     vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
     vec2 p = uv;
 
-    float radius = length(p);
-    float angle = atan(p.y, p.x);
-
-    // Pure black space with white stars.
     vec3 col = vec3(0.0);
-    col += vec3(0.78) * starField(uv) * 0.65;
+    col += vec3(0.72) * starField(uv) * 0.58;
 
     float tinyStars = pow(
-        max(noise(uv * 132.0 + vec2(3.0, 7.0)) - 0.86, 0.0),
+        max(noise(uv * 135.0 + vec2(3.0, 7.0)) - 0.87, 0.0),
         5.0
     );
-    col += vec3(0.25) * tinyStars;
+    col += vec3(0.18) * tinyStars;
 
-    // Mathematical infinity curve.
     float a = 0.66;
     float r2 = dot(p, p);
+    float field = r2 * r2 - a * a * (p.x * p.x - p.y * p.y);
 
-    float field = r2 * r2
-        - a * a * (p.x * p.x - p.y * p.y);
-
-    vec2 gradient = vec2(
+    vec2 grad = vec2(
         4.0 * p.x * r2 - 2.0 * a * a * p.x,
         4.0 * p.y * r2 + 2.0 * a * a * p.y
     );
 
-    float d = abs(field) / max(length(gradient), 0.001);
+    float signedD = field / max(length(grad), 0.001);
+    float d = abs(signedD);
+    float angle = atan(p.y, p.x);
 
-    // Flowing rainbow color along the infinity ribbon.
-    float hue = fract(
-        0.52 + 0.28 * p.x + 0.42 * p.y - t * 0.105
-        + 0.035 * sin(12.0 * (p.x - p.y) - t * 1.7)
+    float whiteHalo = exp(-d * 12.0);
+    float whiteBody = exp(-d * 74.0);
+    float whiteCore = exp(-d * 245.0);
+
+    col += vec3(0.075) * whiteHalo;
+    col += vec3(0.26) * whiteBody;
+    col += vec3(0.86) * whiteCore;
+
+    float phaseA = signedD * 255.0
+        + 1.7 * sin(18.0 * p.x - 13.0 * p.y - t * 2.0)
+        + 0.75 * sin(10.0 * p.y + 17.0 * p.x + t * 1.55);
+
+
+    float phaseB = signedD * 342.0
+        - 1.3 * sin(15.0 * p.y + 12.0 * p.x + t * 1.8)
+        + 0.60 * sin(24.0 * p.x - 8.0 * p.y - t * 2.45);
+
+    float threadsA = pow(max(cos(phaseA), 0.0), 19.0);
+    float threadsB = pow(max(cos(phaseB), 0.0), 25.0);
+    float threadEnvelope = exp(-d * 5.7);
+
+    float threadShimmer = 0.68 + 0.32 * sin(
+        23.0 * p.x - 17.0 * p.y - t * 3.0
+        + 1.5 * sin(9.0 * p.y + t)
     );
 
-    vec3 rainbow = hsv2rgb(vec3(hue, 0.88, 1.0));
+    float threads = (threadsA * 0.74 + threadsB * 0.50)
+                  * threadEnvelope * threadShimmer;
 
-    float flow = 0.68 + 0.32 * sin(
-        26.0 * (p.x + p.y) - t * 4.1
-        + 1.8 * sin(7.0 * p.y - t * 1.3)
+    float threadHue = fract(
+        0.57 + 0.27 * p.x + 0.19 * p.y - t * 0.07
+        + 0.035 * sin(11.0 * p.x + 13.0 * p.y - t)
     );
 
-    float broadGlow = exp(-d * 8.5);
-    float colorAura = exp(-d * 22.0);
-    float whiteLine = exp(-d * 105.0);
-    float whiteHotCore = exp(-d * 275.0);
+    vec3 threadColor = hsv2rgb(vec3(threadHue, 0.94, 1.0));
+    col += threadColor * threads * 0.82;
 
-    // Multicolored outer energy and brilliant white center.
-    col += rainbow * broadGlow * 0.22;
-    col += rainbow * colorAura * (0.48 + 0.42 * flow);
-    col += rainbow * exp(-d * 48.0) * 0.26 * flow;
 
-    col += vec3(0.90, 0.95, 1.0) *
-        whiteLine * (0.70 + 0.30 * flow);
-
-    col += vec3(1.0) * whiteHotCore * 1.15;
-
-    // Rainbow energy rays spreading from the central crossing.
-    float rayPattern = pow(
-        max(0.0, cos(
-            angle * 31.0
-            + 0.45 * sin(angle * 7.0)
-            - t * 0.22
-        )),
-        22.0
+    float looseWave = 0.5 + 0.5 * sin(
+        38.0 * signedD + 2.5 * sin(angle * 3.0 - t * 1.4)
+        + 1.2 * sin(p.x * 17.0 + p.y * 14.0 - t * 1.8)
     );
 
-    float rayFade = exp(-radius * 2.45)
-        * smoothstep(0.025, 0.15, radius);
+    float looseThreads = pow(looseWave, 11.0) * exp(-d * 3.9);
+    float looseHue = fract(threadHue + 0.18
+                          + 0.12 * sin(angle * 2.0 + t));
 
-    float rayFlicker = 0.70 + 0.30 * sin(
-        t * 2.6 + angle * 9.0 + noise(p * 18.0) * 4.0
-    );
+    col += hsv2rgb(vec3(looseHue, 0.88, 1.0))
+         * looseThreads * 0.19;
 
-    vec3 rayColor = hsv2rgb(vec3(
-        fract(angle / 6.2831853 + t * 0.045 + 0.15),
-        0.92,
-        1.0
-    ));
-
-    col += rayColor * rayPattern * rayFade * rayFlicker * 0.48;
-
-    // Moving colored energy streaks flowing outward.
-    float radialWave = 0.5 + 0.5 * sin(
-        radius * 37.0 - t * 3.0 + noise(uv * 15.0) * 3.0
-    );
-
-    float wisps = pow(radialWave, 15.0) * exp(-radius * 2.2);
-
-    vec3 wispColor = hsv2rgb(vec3(
-        fract(angle / 6.2831853 - t * 0.055),
-        0.84,
-        1.0
-    ));
-
-    col += wispColor * wisps * 0.12;
-
-    // Four colorful glowing orbs moving around the infinity symbol.
+    // Four orbs rotate around the infinity and change colors.
     for (int i = 0; i < 4; i++)
     {
-        float phase = t * 0.78 + float(i) * 1.5707963;
+        float fi = float(i);
+        float phase = t * 0.78 + fi * 1.5707963;
 
         float s = sin(phase);
         float c = cos(phase);
@@ -173,34 +143,35 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         vec2 orbPos = a * vec2(c, s * c) / (1.0 + s * s);
         float orbDist = length(p - orbPos);
 
-        float orbHalo = exp(-orbDist * orbDist * 125.0);
-        float orbGlow = exp(-orbDist * orbDist * 620.0);
-        float orbCore = exp(-orbDist * orbDist * 2600.0);
+        float halo = exp(-orbDist * orbDist * 95.0);
+        float glow = exp(-orbDist * orbDist * 360.0);
+        float core = exp(-orbDist * orbDist * 1500.0);
 
         float orbHue = fract(
-            float(i) * 0.23 + t * 0.075
-            + 0.08 * sin(phase * 1.7)
+            fi * 0.235 + t * 0.115
+            + 0.035 * sin(phase * 1.7)
         );
 
-        vec3 orbColor = hsv2rgb(vec3(orbHue, 0.92, 1.0));
+        vec3 orbColor = hsv2rgb(vec3(orbHue, 0.90, 1.0));
 
-        col += orbColor * orbHalo * 0.60;
-        col += orbColor * orbGlow * 1.20;
-        col += vec3(1.0) * orbCore * 1.65;
+        col += orbColor * halo * 0.42;
+        col += orbColor * glow * 1.25;
+        col += vec3(1.0) * core * 1.65;
+
+        // A faint colored wake follows each moving orb.
+        vec2 tangent = normalize(vec2(-s, c - 2.0 * s * s));
+        vec2 wake = p - (orbPos - tangent * 0.055);
+
+        col += orbColor * exp(-length(wake) * 25.0) * 0.09;
     }
 
-    // Brilliant central nexus with a rainbow corona.
-    float nexus = exp(-dot(p, p) * 155.0);
-    float nexusPulse = 0.82 + 0.18 * sin(t * 2.2);
+    // White-hot central crossing.
+    float nexus = exp(-dot(p, p) * 160.0);
+    col += vec3(0.30) * nexus;
+    col += vec3(1.0) * exp(-dot(p, p) * 860.0) * 1.15;
 
-    col += hsv2rgb(vec3(
-        fract(t * 0.07), 0.75, 1.0
-    )) * nexus * 0.45 * nexusPulse;
-
-    col += vec3(1.0) * exp(-dot(p, p) * 800.0) * 1.2;
-
-    // Keep the background dark while softening bright highlights.
-    col = col / (1.0 + col * 0.22);
+    // Keep the background black and the white core luminous.
+    col = col / (1.0 + col * 0.20);
     col = pow(max(col, 0.0), vec3(0.92));
 
     fragColor = vec4(col, 1.0);
