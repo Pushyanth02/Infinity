@@ -78,6 +78,18 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         4.0 * p.y * r2 + 2.0 * a * a * p.y
     );
 
+    float sd = field / max(length(grad), 0.001);
+    float d = abs(sd);
+    float angle = atan(p.y, p.x);
+
+    float warpA = 1.55 * sin(17.0 * p.x - 13.0 * p.y - t * 1.8)
+                + 0.72 * sin(11.0 * p.y + 16.0 * p.x + t * 1.35);
+
+    float warpB = 1.25 * sin(14.0 * p.y + 12.0 * p.x + t * 1.65)
+                + 0.68 * sin(22.0 * p.x - 9.0 * p.y - t * 2.1);
+
+    float warpC = 1.05 * sin(19.0 * p.x + 8.0 * p.y + t * 1.25)
+                - 0.82 * sin(13.0 * p.y - 15.0 * p.x - t * 1.9);
 
     float threadsA = pow(max(cos(sd * 510.0 + warpA), 0.0), 22.0);
     float threadsB = pow(max(cos(sd * 665.0 + warpB), 0.0), 34.0);
@@ -106,7 +118,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     col += threadColor * strength * 0.95;
 
-    float loosePhase = 355.0 * sd
+    float loosePhase = 35.0 * sd
         + 1.9 * sin(angle * 2.5 - t * 1.25)
         + 0.9 * sin(18.0 * p.x + 14.0 * p.y - t * 1.7);
 
