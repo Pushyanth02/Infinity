@@ -1,4 +1,7 @@
 
+// INFINITY COSMOS — procedural space shader
+// ShaderGator / Shadertoy-style fragment shader (GLSL ES 3.0)
+
 float hash21(vec2 p)
 {
     p = fract(p * vec2(123.34, 456.21));
