@@ -148,20 +148,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     col += threadColor * threadStrength * flow * 0.95;
 
-    float loosePhase = 355.0 * signedD
-        + 1.9 * sin(angle * 2.5 - t * 1.25)
-        + 0.9 * sin(
-            18.0 * p.x + 14.0 * p.y - t * 1.7
-        );
-
-    float looseStrands =
-        pow(max(cos(loosePhase), 0.0), 20.0)
-        * exp(-d * 3.4);
-
-    float looseHue = fract(
-        hue + 0.16 + 0.10 * sin(angle * 2.0 - t)
-    );
-
     float glintWave = 0.5 + 0.5 * sin(
         signedD * 92.0 - t * 4.2
         + 9.0 * sin(angle * 2.0 + t)
