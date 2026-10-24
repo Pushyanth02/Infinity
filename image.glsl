@@ -78,18 +78,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         4.0 * p.y * r2 + 2.0 * a * a * p.y
     );
 
-    float sd = field / max(length(grad), 0.001);
-    float d = abs(sd);
-    float angle = atan(p.y, p.x);
-
-    float warpA = 1.55 * sin(17.0 * p.x - 13.0 * p.y - t * 1.8)
-                + 0.72 * sin(11.0 * p.y + 16.0 * p.x + t * 1.35);
-
-    float warpB = 1.25 * sin(14.0 * p.y + 12.0 * p.x + t * 1.65)
-                + 0.68 * sin(22.0 * p.x - 9.0 * p.y - t * 2.1);
-
-    float warpC = 1.05 * sin(19.0 * p.x + 8.0 * p.y + t * 1.25)
-                - 0.82 * sin(13.0 * p.y - 15.0 * p.x - t * 1.9);
 
     float threadsA = pow(max(cos(sd * 510.0 + warpA), 0.0), 22.0);
     float threadsB = pow(max(cos(sd * 665.0 + warpB), 0.0), 34.0);
@@ -143,7 +131,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     col += vec3(0.05) * exp(-d * 10.0);
     col += vec3(0.15) * exp(-d * 30.0);
     col += vec3(0.80) * exp(-d * 122.0);
-    col += vec3(1.0) * exp(-d * 3.0);
+    col += vec3(1.0) * exp(-d * 300.0);
 
     col = pow(max(col, 0.0), vec3(0.92));
     fragColor = vec4(col, 1.0);
