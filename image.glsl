@@ -175,7 +175,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     float nexus = exp(-dot(p, p) * 170.0);
     col += vec3(0.24) * nexus;
-    col += vec3(1.0) * exp(-dot(p, p) * 9.0) * 1.1;
+    col += vec3(1.0) * exp(-dot(p, p) * 90.0) * 1.1;
 
     col = min(col, vec3(1.0));
     col = pow(max(col, 0.0), vec3(0.92));
