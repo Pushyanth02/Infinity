@@ -111,7 +111,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     );
 
     float strandA = pow(
-        max(cos(signedD * 510.0 + warpA), 0.0), 28.0
+        max(cos(signedD * 510.0 + warpA), 0.0), 22.0
     );
 
     float strandB = pow(
