@@ -32,7 +32,7 @@ vec3 hsv2rgb(vec3 c)
 
 float starField(vec2 p)
 {
-    vec2 grid = p * 84.0;
+    vec2 grid = p * 154.0;
     vec2 id = floor(grid);
     vec2 f = fract(grid) - 0.5;
 
@@ -118,7 +118,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec3 threadColor = hsv2rgb(vec3(threadHue, 0.94, 1.0));
     col += threadColor * threads * 0.82;
 
-
     float looseWave = 0.5 + 0.5 * sin(
         38.0 * signedD + 2.5 * sin(angle * 3.0 - t * 1.4)
         + 1.2 * sin(p.x * 17.0 + p.y * 14.0 - t * 1.8)
@@ -131,7 +130,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     col += hsv2rgb(vec3(looseHue, 0.88, 1.0))
          * looseThreads * 0.19;
 
-    // Four orbs rotate around the infinity and change colors.
     for (int i = 0; i < 4; i++)
     {
         float fi = float(i);
@@ -158,19 +156,16 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         col += orbColor * glow * 1.25;
         col += vec3(1.0) * core * 1.65;
 
-        // A faint colored wake follows each moving orb.
         vec2 tangent = normalize(vec2(-s, c - 2.0 * s * s));
         vec2 wake = p - (orbPos - tangent * 0.055);
 
         col += orbColor * exp(-length(wake) * 25.0) * 0.09;
     }
 
-    // White-hot central crossing.
     float nexus = exp(-dot(p, p) * 160.0);
     col += vec3(0.30) * nexus;
     col += vec3(1.0) * exp(-dot(p, p) * 860.0) * 1.15;
 
-    // Keep the background black and the white core luminous.
     col = col / (1.0 + col * 0.20);
     col = pow(max(col, 0.0), vec3(0.92));
 
