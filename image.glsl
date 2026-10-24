@@ -170,7 +170,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         + 9.0 * sin(angle * 2.0 + t)
     );
 
-    float glints = pow(glintWave, 1.0) * exp(-d * 9.0);
+    float glints = pow(glintWave, 18.0) * exp(-d * 9.0);
     col += vec3(1.0) * glints * 0.16;
 
     float nexus = exp(-dot(p, p) * 170.0);
