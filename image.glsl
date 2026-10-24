@@ -32,7 +32,7 @@ vec3 hsv2rgb(vec3 c)
 
 float starField(vec2 p)
 {
-    vec2 grid = p * 154.0;
+    vec2 grid = p * 84.0;
     vec2 id = floor(grid);
     vec2 f = fract(grid) - 0.5;
 
